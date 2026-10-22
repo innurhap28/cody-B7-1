@@ -1,0 +1,12 @@
+# 새 서비스 전용. Python 3.12 사용. 설치 검증 후 lock 파일을 추가한다.
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+SQLAlchemy>=2.0,<3
+pydantic>=2.10,<3
+pydantic-settings>=2.6,<3
+email-validator>=2.2,<3
+bcrypt>=4.2,<6
+itsdangerous>=2.2,<3
+httpx>=0.28,<1
+Jinja2>=3.1.6,<4
+tzdata>=2024.2
