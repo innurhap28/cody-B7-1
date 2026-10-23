@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인스타 릴스 대본 코치 · STORY / REELS</title><link rel="stylesheet" href="/static/css/shortform.css"></head>
+<body><a class="skip-link" href="#message">대화 입력으로 이동</a>
+<header><a class="brand" href="/">STORY / REELS</a><span class="muted small">{{ email }}</span><button id="logout-button" type="button">로그아웃</button></header>
+<main class="workspace">
+<aside class="sidebar"><p class="eyebrow">YOUR STORIES</p><button id="new-conversation" class="primary" type="button">＋ 새 릴스 기획</button><nav id="conversations" aria-label="내 대화 목록"></nav><button id="more-conversations" type="button" hidden>대화 더 보기</button><p class="muted small">대화방마다 제작 조건과 대본을 따로 보관합니다.</p></aside>
+<section class="conversation" aria-labelledby="conversation-title">
+<div class="intro"><p class="eyebrow">IDEA → BRIEF → SCRIPT</p><h1 id="conversation-title">어떤 이야기를 만들까요?</h1><p class="muted">주제, 시청자, 연출을 함께 정리한 뒤 대본을 만듭니다.</p><span id="phase" class="badge">대화를 선택해 주세요</span><button id="refresh-conversation" type="button" hidden>새로 불러오기</button></div>
+<button id="more-history" type="button" hidden>이전 메시지 보기</button><div id="messages" class="messages" role="log" aria-live="polite"></div>
+<p id="status" class="muted" role="status"></p><p id="workspace-error" class="error" role="alert" hidden></p>
+<form id="chat-form" class="composer"><label class="small" for="message">아이디어나 수정할 내용을 자유롭게 적어주세요</label><textarea id="message" name="message" rows="3" maxlength="6000" required placeholder="20대 자취생에게 쉬운 아침 메뉴를 알려주는 30초 릴스를 만들고 싶어요."></textarea>
+<div class="composer-actions"><span class="muted small">한 번에 필요한 조건 1~2개부터 정리해요.</span><button id="send" class="primary" type="submit">보내기 ↗</button></div></form>
+</section>
+<aside class="planning"><p class="eyebrow">PRODUCTION BRIEF</p><h2>함께 정리한 제작 조건</h2><dl id="brief"><dt>아직 기획이 없어요</dt><dd>왼쪽에서 새 기획을 시작해 주세요.</dd></dl><button id="generate" class="primary" type="button" hidden>이 조건으로 대본 작성</button><button id="revise" type="button" hidden>입력한 내용으로 대본 수정</button><p class="muted small">대본 작성 전 조건을 확인해 주세요. 참고 자료와 적용 이유는 대본 아래에 표시됩니다.</p></aside>
+</main><p id="global-error" class="error" role="alert" hidden></p><script type="module" src="/static/js/shortform.js"></script></body></html>
