@@ -154,6 +154,13 @@ class ShortformCoach:
                 missing = updated.missing_fields()
                 if missing:
                     return self.question_result(updated, missing, parsed.follow_up_questions)
+                if phase == "drafted" and not changed:
+                    # An unchanged patch (including repeated existing values) is
+                    # not a new brief: keep consent and the stored draft usable.
+                    return {"phase": "drafted", "reply_type": "brief_summary",
+                            "answer": "현재 제작 조건과 대본을 유지했어요. 수정할 내용이 있으면 입력한 뒤 ‘입력한 내용으로 대본 수정’을 눌러 주세요.",
+                            "brief": updated.model_dump(), "missing_fields": [],
+                            "follow_up_questions": [], "script": None, "references": []}
                 return {"phase": "ready", "reply_type": "brief_summary", "answer": summarize(updated),
                         "brief": updated.patched({}).model_dump(), "missing_fields": [],
                         "follow_up_questions": [], "script": None, "references": []}

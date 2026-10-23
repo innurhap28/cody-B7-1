@@ -4,7 +4,7 @@
 
 2026-10-23, 팀장 저장소 innurhap28/cody-B7-1의 develop(51f37838c0a3e899adf07a4414f423ef4e12348c)에서 로컬 feature/c-ai-deploy를 생성했다. 기존 전달 패키지의 C 코드를 검토하여 A/B 없이 검증할 수 있는 서비스 모듈부터 추가했다. 초기 코드는 AI 도구 도움으로 준비했으며 팀원의 직접 기여나 리뷰 완료를 의미하지 않는다.
 
-GitHub 연결 도구의 브랜치 생성은 403 Resource not accessible by integration으로 거절되었다. 로컬 git push도 실행 환경의 credential-manager 오류로 실패했다. 원격 브랜치 생성·업로드·PR·GitHub Actions 실행은 완료되지 않았다. 파일은 로컬 C 브랜치의 작업 트리에 준비되어 있다.
+원격 feature/c-ai-deploy 브랜치 생성과 초기 코드 업로드를 완료했다. 초기 커밋은 74664617a20f441dde8dcdbfbc4eb3ba9d195532이며, [PR #3](https://github.com/innurhap28/cody-B7-1/pull/3)을 develop 대상으로 열어 리뷰 중이다. 해당 초기 커밋의 GitHub Actions c-unit 및 foundation 검사가 통과했다. 연결 도구 권한 오류 이후 본인 PC의 Git으로 업로드했으며, 초기 커밋의 통과 결과가 이후 수정 커밋까지 보증하는 것은 아니다.
 
 ## 이번에 추가한 코드
 
@@ -32,7 +32,16 @@ GitHub 연결 도구의 브랜치 생성은 403 Resource not accessible by integ
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-이번 로컬 실행: 53개 실행, 실패 0, skip 0, 0.214초. 로그는 로컬 tmp/c-tests.log에 있으며 Git에 포함하지 않는다. 모의 공급자 응답을 사용했다. 실제 코디세이 요청·화면·DB 저장·외부 배포는 이번 범위에서 검증하지 않았다. CI 파일은 추가했으나 원격 Actions 결과는 아직 없다.
+초기 로컬 실행: 53개 실행, 실패 0, skip 0, 0.214초. 로그는 로컬 tmp/c-tests.log에 있으며 Git에 포함하지 않는다. 모의 공급자 응답을 사용했다. 실제 코디세이 요청·화면·DB 저장·외부 배포는 이번 범위에서 검증하지 않았다. 초기 커밋의 원격 [c-unit](https://github.com/innurhap28/cody-B7-1/actions/runs/39920535993/job/120304407824) 및 [foundation](https://github.com/innurhap28/cody-B7-1/actions/runs/39920535991/job/120304407414) 검사 통과를 확인했다.
+
+### 리뷰 반영: 대본 생성 후 변경 없는 메시지
+
+- action=message, intent=brief, 제작 조건이 완성된 상태에서 변경 없는 메시지까지 ready로 전환하고 confirmed를 해제하는 문제를 회귀 검사로 재현했다.
+- drafted에서 실제 제작 조건이 바뀌지 않으면 drafted·confirmed를 보존한다. 빈 패치뿐 아니라 기존 값의 반복도 변경 없음으로 판정한다.
+- 응답 필드나 공통 스키마는 변경하지 않았다. script=null은 새 대본 생성이 없다는 뜻이며 B 저장 계층은 기존 최신 대본을 유지한다.
+- 조건 변경으로 완성된 기획은 ready에서 다시 확인받고, 필수 조건이 지워지면 briefing에서 질문한다.
+- 회귀 검사 4개를 추가했다: 변경 없음(3종 패치), 실제 길이 변경, 필수 조건 제거, 변경 없는 메시지 이후 대본 수정 가능 여부. 기존 설명 질문의 drafted 유지 검사도 유지한다.
+- 리뷰 수정 후 로컬 전체 검사: 57개 통과, 실패 0, skip 0, 0.198초. tmp/review-after-fix.log에 기록했다. 수정분은 로컬 작업 트리에 있으며 초기 원격 Actions 결과와 구분한다. 추가 커밋을 push한 뒤 새 Actions 결과를 확인해야 한다.
 
 키 없는 검색 확인:
 
@@ -50,7 +59,7 @@ GitHub 연결 도구의 브랜치 생성은 403 Resource not accessible by integ
 6. 본인 로컬 .env에 키 설정 후 실제 코디세이 시연. 키는 Git/로그/PR에 포함하지 않음.
 7. 본인 브랜치 → develop PR, 리뷰 후 병합. Linux 배포·외부 접속 검증은 별도.
 
-## 본인 PC에서 업로드
+## 리뷰 의견 반영 및 추가 업로드
 
 이 폴더에서 git remote -v가 팀장 저장소를 가리키는지 확인한다. GitHub Collaborator 초대 수락과 연결 앱의 저장소 쓰기 권한은 별개일 수 있다. 토큰을 소스나 터미널 명령에 직접 넣지 않는다.
 
@@ -59,10 +68,11 @@ git branch --show-current
 git status
 git diff --cached --stat
 git diff --cached
-git commit -m "feat: 릴스 코치 AI 처리 및 독립 검증 기반 추가"
-git push -u origin feature/c-ai-deploy
+git add app/services/shortform/coach.py tests/test_core.py docs/C_WORK_STATUS.md
+git commit -m "fix: 기획 변경 없는 메시지에서 대본 상태 유지"
+git push
 ```
 
-로컬 작성자 이름·이메일이 설정되어 있지 않아 자동 커밋은 만들지 않았다. 커밋 전에 본인의 실제 Git 이름·이메일(또는 GitHub noreply 이메일)을 이 저장소에 설정한다. 다른 팀원 작성자 정보로 커밋하지 않는다.
+로컬 작성자 설정과 origin/feature/c-ai-deploy 추적 연결이 완료되어 있다. 같은 브랜치에 추가 커밋을 push하면 기존 PR #3에 반영된다. 다른 팀원 작성자 정보로 커밋하지 않는다.
 
 GitHub PR의 base는 develop, compare는 feature/c-ai-deploy로 한다. 초기 C 모듈 PR임을 밝히고 전체 채팅 연결·실제 AI·배포 미검증 항목을 남긴다.

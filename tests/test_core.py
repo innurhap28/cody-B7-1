@@ -96,6 +96,51 @@ class CoreTests(unittest.TestCase):
         self.assertFalse(result["brief"]["confirmed"])
         self.assertIsNone(result["script"])
 
+    def test_unchanged_brief_message_preserves_drafted_state(self):
+        brief = complete_brief(confirmed=True)
+        previous = draft()
+        for patch in [{}, {"topic": brief.topic}, {"audience": {"age_range": "20대"}}]:
+            with self.subTest(patch=patch):
+                result, _ = self.call({"intent": "brief", "brief_patch": patch},
+                                      message="고마워", brief=brief, phase="drafted",
+                                      latest_script=previous)
+                self.assertEqual(result["phase"], "drafted")
+                self.assertEqual(result["brief"], brief.model_dump())
+                self.assertIsNone(result["script"])
+                self.assertEqual(result["follow_up_questions"], [])
+                self.assertNotIn("대본 작성’을 눌러", result["answer"])
+                self.assertEqual(previous, draft())
+
+    def test_changed_drafted_brief_requires_confirmation_again(self):
+        brief = complete_brief(confirmed=True)
+        result, _ = self.call({"brief_patch": {"duration_sec": 45}},
+                              brief=brief, phase="drafted", latest_script=draft())
+        self.assertEqual(result["phase"], "ready")
+        self.assertFalse(result["brief"]["confirmed"])
+        self.assertEqual(result["brief"]["duration_sec"], 45)
+        self.assertIsNone(result["script"])
+        self.assertEqual(brief.duration_sec, 30)
+        self.assertTrue(brief.confirmed)
+
+    def test_cleared_drafted_brief_returns_to_questions(self):
+        result, _ = self.call({"brief_patch": {"direction_style": None}},
+                              brief=complete_brief(confirmed=True), phase="drafted",
+                              latest_script=draft())
+        self.assertEqual(result["phase"], "briefing")
+        self.assertFalse(result["brief"]["confirmed"])
+        self.assertIn("direction_style", result["missing_fields"])
+
+    def test_revision_remains_available_after_unchanged_message(self):
+        previous = {**draft(), "script_id": 7, "revision": 1}
+        message, _ = self.call({"brief_patch": {}}, message="고마워",
+                               brief=complete_brief(confirmed=True), phase="drafted",
+                               latest_script=previous)
+        revision, _ = self.call(draft(), action="revise", message="첫 장면을 바꿔줘",
+                                brief=Brief.model_validate(message["brief"]),
+                                phase=message["phase"], latest_script=previous)
+        self.assertEqual(revision["phase"], "drafted")
+        self.assertEqual(revision["reply_type"], "revision")
+
     def test_generate_during_incomplete_brief_skips_ai(self):
         result,calls=self.call({},action="generate")
         self.assertEqual(calls,[])
