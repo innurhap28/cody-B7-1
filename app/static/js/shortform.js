@@ -93,19 +93,27 @@ function turnNodes(turn) {
   else nodes.push(bubble('assistant',turn.status === 'processing' ? '이 요청은 아직 처리 중입니다. 새로 불러오기로 확인해 주세요.' : `이 요청은 완료되지 않았습니다. (${turn.error_code || turn.status})`));
   return nodes;
 }
-async function loadHistory(older=false) {
-  const page = await apiRequest(`/api/me/chats?conversation_id=${state.conversation.conversation_id}&limit=20&offset=${older ? state.historyOffset : 0}`);
-  const nodes = [...page.items].reverse().flatMap(turnNodes);
+async function fetchHistory(id, offset=0) {
+  return apiRequest(`/api/me/chats?conversation_id=${id}&limit=20&offset=${offset}`);
+}
+function renderHistory(page, nodes, older=false) {
   if (older) $('messages').prepend(...nodes); else $('messages').replaceChildren(...nodes);
   state.historyOffset = (older ? state.historyOffset : 0) + page.items.length;
   $('more-history').hidden = page.items.length < 20;
 }
+async function loadHistory(older=false) {
+  const page = await fetchHistory(state.conversation.conversation_id, older ? state.historyOffset : 0);
+  renderHistory(page, [...page.items].reverse().flatMap(turnNodes), older);
+}
 async function selectConversation(id) {
   const conversation = await apiRequest(`/api/conversations/${id}`);
+  const page = await fetchHistory(id);
+  const nodes = [...page.items].reverse().flatMap(turnNodes);
+  // Commit the selection only after both requests and message preparation succeed.
   state.conversation = conversation;
   localStorage.setItem(state.userKey,String(id));
   renderBrief(conversation);
-  await loadHistory();
+  renderHistory(page, nodes);
   for (const node of $('conversations').children) node.setAttribute('aria-current',String(Number(node.dataset.id) === id));
 }
 async function loadList(more=false) {
@@ -135,14 +143,26 @@ async function send(action) {
   if (!message) throw new Error('아이디어나 수정 요청을 입력해 주세요.');
   const body = {conversation_id:state.conversation.conversation_id,expected_version:state.conversation.version,action,message};
   if (action === 'revise') body.base_script_id = state.conversation.latest_script.script_id;
+  let requestError;
   try {
     await apiRequest('/api/chat',{method:'POST',body,timeoutMs:135000});
     if (action !== 'generate') $('message').value='';
-  } finally {
+  } catch (error) {
+    requestError = error;
+  }
+  try {
     // Recover the server's version even if the browser timed out or another tab won.
     await selectConversation(body.conversation_id);
+    if (!requestError) await loadList();
+  } catch (refreshError) {
+    // A recovery failure must not hide the original AI/network error.
+    if (requestError) throw requestError;
+    const error = new Error(`요청은 완료됐지만 화면을 새로 불러오지 못했습니다. 요청을 다시 보내지 말고 새로 불러오기를 눌러 주세요. (${refreshError.message})`);
+    error.status = refreshError.status;
+    error.code = 'REFRESH_FAILED';
+    throw error;
   }
-  await loadList();
+  if (requestError) throw requestError;
 }
 $('chat-form').addEventListener('submit',(event)=>{event.preventDefault();run(()=>send('message'));});
 $('generate').addEventListener('click',()=>run(()=>send('generate')));
