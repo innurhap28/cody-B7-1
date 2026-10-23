@@ -22,7 +22,7 @@
 
 1차 PR에서는 기존 develop 파일을 수정하지 않았다. 후속 통합 작업에서는 합의한 공통 main.py의 세션·오류 처리·DB 초기화를 연결했다. config.py, 공통 schemas.py, A의 템플릿·JS/CSS, B의 인증·DB·모델·store.py는 변경하지 않았다. 이후 A/B가 공통 파일을 수정하면 다시 비교해야 한다.
 
-현재 로컬 실제 앱에는 A 페이지·정적 파일, B 인증·대화 라우터, C 채팅 라우터가 연결되어 있다. /는 로그인 여부에 따라 로그인 페이지로 이동하거나 작업 화면을 표시하며 /health는 JSON을 유지한다. 세션·DB 초기화·지식 검색·오류 처리를 연결했다. [세션 통합 검증](C_AUTH_INTEGRATION.md)과 [화면·채팅 통합](C_SCREEN_CHAT_INTEGRATION.md)에 단계별 범위를 기록했다. 실제 AI 호출·브라우저 시각·외부 배포 완료를 뜻하지 않는다.
+현재 실제 앱에는 A 페이지·정적 파일, B 인증·대화 라우터, C 채팅 라우터가 연결되어 있다. /는 로그인 여부에 따라 로그인 페이지로 이동하거나 작업 화면을 표시하며 /health는 JSON을 유지한다. 세션·DB 초기화·지식 검색·오류 처리를 연결했다. [세션 통합 검증](C_AUTH_INTEGRATION.md), [화면·채팅 통합](C_SCREEN_CHAT_INTEGRATION.md), [실제 코디세이 검증](C_LIVE_VERIFICATION.md)에 단계별 범위를 기록했다. 실제 API 검증까지 완료했으며 브라우저 시각·외부 배포는 별도다.
 
 ## 직접 수행한 검증
 
@@ -55,7 +55,14 @@
 - app/main.py에 로그인·가입·작업 화면과 정적 파일을 연결하고 app/routers/shortform.py를 추가했다.
 - B 저장 함수와 C 코치를 연결하여 질문·확인·생성·수정·실패 기록을 처리한다. A/B 코드와 공통 스키마는 변경하지 않았다.
 - 실제 앱 검사 16개를 포함한 pytest 82개 및 하위 검사 46개 통과, 실패/skip 0, 46.79초. Node DOM 검사 19개 통과. AI 호출은 대역이며 실제 공급자 호출은 미검증이다.
-- 이번 변경은 로컬 작업 트리이며 자동 커밋·push하지 않는다. PR #5가 열린 상태라면 같은 C 브랜치 push에 함께 반영되므로 리뷰어에게 추가 범위를 알린다. 이미 병합됐으면 최신 develop 반영 후 새 PR을 만든다.
+- 사용자가 b30f5bd로 커밋·push했으며 해당 커밋의 원격 c-unit/foundation 검사 4개도 통과했다. PR #5의 추가 범위로 리뷰받는다.
+
+### 후속 검증: 실제 코디세이 호출
+
+- 현재 작업 폴더의 로컬 .env에 기존 코디세이 설정을 연결하고 Git 제외를 확인했다.
+- 실제 API 4회로 사전 질문·조건 요약·30초 5장면 대본 생성·첫 장면 수정에 성공했다. 성공 대화 4건과 대본 2개 버전을 격리 SQLite에 저장·조회했고 로그아웃 후 401도 확인했다.
+- 요청 모델 별칭은 claude-sonnet-4, Anthropic 호환이다. .env·실제 키·DB는 업로드하지 않는다.
+- 재현 스크립트 scripts/check_live_chat.py와 기록 문서를 추가했다. 명시적인 --live 실행만 실제 요청하며 CI에서는 호출하지 않는다. 이번 파일은 사용자 커밋 전 로컬 변경이다.
 
 키 없는 검색 확인:
 
@@ -65,10 +72,9 @@
 
 ## 연결 이후 남은 순서
 
-1. 이번 로컬 변경을 사용자가 검토·커밋·push하고 PR 검사를 확인한다.
-2. 이번 폴더의 로컬 .env에 코디세이 키를 설정한 뒤 실제 API 호출을 검증한다.
-3. 실제 브라우저 PC·모바일에서 가입·로그인·기획·생성·수정·출처·기록을 확인한다.
-4. 팀 리뷰 후 develop에 병합한다. Linux HTTPS·영속 DB·외부 접속 검증은 별도다.
+1. 추가 실제 검증 스크립트·문서를 사용자가 검토·커밋·push한다.
+2. 실제 브라우저 PC·모바일에서 가입·로그인·기획·생성·수정·출처·기록을 확인한다.
+3. 팀 리뷰 후 develop에 병합한다. Linux HTTPS·영속 DB·외부 접속 검증은 별도다.
 
 ## 리뷰 의견 반영 및 추가 업로드
 
@@ -79,11 +85,11 @@ git branch --show-current
 git status
 git diff --cached --stat
 git diff --cached
-git add app/main.py app/routers/shortform.py tests/test_main_access.py docs/C_WORK_STATUS.md docs/C_SCREEN_CHAT_INTEGRATION.md
-git commit -m "feat: 릴스 기획 화면과 채팅 API 연결"
+git add scripts/check_live_chat.py docs/C_LIVE_VERIFICATION.md docs/C_WORK_STATUS.md docs/C_SCREEN_CHAT_INTEGRATION.md
+git commit -m "test: 실제 코디세이 생성과 수정 검증 기록 추가"
 git push
 ```
 
 로컬 작성자 설정과 origin/feature/c-ai-deploy 추적 연결이 완료되어 있다. PR #3은 이미 병합되었다. PR #5의 현재 상태에 따라 기존 PR에 포함하거나 새 PR을 생성한다. 다른 팀원 작성자 정보로 커밋하지 않는다.
 
-GitHub PR의 base는 develop, compare는 feature/c-ai-deploy로 한다. 화면·채팅 연결 추가 범위를 밝히고 실제 AI·브라우저 시각·배포 미검증 항목을 남긴다.
+GitHub PR의 base는 develop, compare는 feature/c-ai-deploy로 한다. 화면·채팅 연결과 실제 API 검증 결과를 밝히고 브라우저 시각·배포 미검증 항목을 남긴다.

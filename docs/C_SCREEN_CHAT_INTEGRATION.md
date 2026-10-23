@@ -64,7 +64,7 @@ POST /api/chat. 로그인 쿠키 필요. 사용자의 ID는 서버 인증에서 
 
 프로젝트 루트는 C:\Users\1234v\Documents\Codex\cody-B7-1-c-work다. 이전 개인 통합본의 바탕화면 폴더와 구분한다.
 
-이 폴더에는 현재 실제 키가 들어 있는 .env를 복사하지 않았다. 기존 .env가 없다면 .env.example을 복사한 뒤 로컬에서 SECRET_KEY와 LLM_API_KEY를 설정한다. 기존 .env가 있다면 덮어쓰지 않는다. 키를 Git/PR/화면 캡처에 포함하지 않는다.
+처음 화면 연결 시 이 폴더에는 .env가 없었으나, 후속 실제 API 검증에서 이전 개인 통합본의 설정을 로컬 .env로 연결했다. .env는 Git에서 제외한다. 다른 PC에서 처음 실행한다면 .env.example을 복사한 뒤 로컬에서 SECRET_KEY와 LLM_API_KEY를 설정한다. 기존 .env가 있다면 덮어쓰지 않는다. 키를 Git/PR/화면 캡처에 포함하지 않는다.
 
 ```powershell
 Set-Location 'C:\Users\1234v\Documents\Codex\cody-B7-1-c-work'
@@ -85,4 +85,4 @@ http://127.0.0.1:8000/login 에서 가입·로그인 후 새 기획을 만든다
 
 ## 커밋 및 후속 작업
 
-사용자 요청에 따라 커밋·push는 자동 실행하지 않았다. 실제 AI 키 입력, 실 API 시연·브라우저 확인·Linux HTTPS 배포는 별도다. 현재 변경은 화면·서버의 연결 및 모의 AI 통합 검증이다.
+사용자가 화면 연결을 b30f5bd로 커밋·push했다. 이후 [실제 API 검증](C_LIVE_VERIFICATION.md)에서 코디세이 호출 4회와 생성·수정·저장을 확인했다. 브라우저 시각 확인·Linux HTTPS 배포는 별도다. 추가 검증 스크립트와 문서는 사용자 커밋을 기다리는 로컬 변경이다.
