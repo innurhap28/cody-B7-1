@@ -1,0 +1,25 @@
+name: C AI unit tests
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  c-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Compile C modules
+        run: python -m compileall -q app/services scripts/check_knowledge.py
+      - name: Check local knowledge retrieval
+        run: python scripts/check_knowledge.py --query '몽타주와 연속 편집'
+      - name: Test briefing, sources and provider contract without a real key
+        run: |
+          python -m unittest discover -s tests -p test_core.py -v
+          python -m unittest discover -s tests -p test_gateway.py -v
+          python -m unittest discover -s tests -p test_structures.py -v
