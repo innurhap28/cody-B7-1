@@ -1,0 +1,177 @@
+{
+  "schema_version": "research-agenda.v1",
+  "kind": "team_research_agenda",
+  "evidence_status": "research_questions_not_findings",
+  "origin": "사용자가 2026-10-19 제공한 이미지 3장. 1번과 3번 중복 제거. 작성자·교수 소속 미확인.",
+  "usage": "연구 방향과 대본 점검 기준. 논문 원문·학습 완료·검증된 효과로 인용하지 않는다.",
+  "topics": [
+    {
+      "id": "rq-01",
+      "category": "영상 구조와 스토리텔링",
+      "question": "3막 구조를 15~60초 숏폼에 어떻게 적용할 수 있는가?",
+      "theory_candidates": [
+        "3막 구조",
+        "프라이타크의 극적 구조",
+        "내러티브 이론"
+      ],
+      "coaching_checks": [
+        "목적에 맞을 때 도입·갈등 또는 변화·해결을 압축해 제안한다.",
+        "실습·정보 영상에 갈등이나 반전을 강제하지 않는다."
+      ],
+      "evidence_needed": "서사 구조 원문과 숏폼 적용 비교 자료. 3막과 프라이타크 구조를 같은 모델로 설명하지 않는다.",
+      "source_card_ids": [
+        "mp-three-act",
+        "plot-freytag"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    },
+    {
+      "id": "rq-02",
+      "category": "영상 구조와 스토리텔링",
+      "question": "정보 배치와 사건 전개가 주의 지속과 어떻게 관련되는가?",
+      "theory_candidates": [
+        "정보 격차 이론",
+        "서스펜스",
+        "인지부하 이론"
+      ],
+      "coaching_checks": [
+        "궁금증을 제시했다면 대본 안에서 답을 제공한다.",
+        "정보 공개 순서와 한 장면의 설명량을 검토한다."
+      ],
+      "evidence_needed": "각 이론의 정의·조건·한계와 주의 또는 시청 지속 측정 자료. 완주율 향상을 보장하지 않는다.",
+      "source_card_ids": [
+        "curiosity-gap",
+        "suspense-anticipation",
+        "cognitive-load",
+        "attention-selection"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    },
+    {
+      "id": "rq-03",
+      "category": "영상 연출과 시각적 문법",
+      "question": "쇼트 구성과 편집 리듬이 감정과 몰입에 어떻게 관여하는가?",
+      "theory_candidates": [
+        "몽타주 이론",
+        "영상 문법",
+        "편집의 연속성"
+      ],
+      "coaching_checks": [
+        "쇼트 크기·카메라 위치·전환 이유를 장면에 맞춰 제안한다.",
+        "행동의 연결·목표 감정·제작 조건을 확인해 장면 길이를 정한다."
+      ],
+      "evidence_needed": "몽타주·연속 편집 원문과 장면 분석. 빠른 컷 자체를 몰입의 보장으로 설명하지 않는다.",
+      "source_card_ids": [
+        "mp-montage",
+        "mp-continuity",
+        "mp-rhythm",
+        "mp-sound"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    },
+    {
+      "id": "rq-04",
+      "category": "영상 연출과 시각적 문법",
+      "question": "설명을 시각적 행동으로 바꾸면 전달과 몰입은 어떻게 달라지는가?",
+      "theory_candidates": [
+        "Show, Don't Tell",
+        "시각적 스토리텔링",
+        "비언어적 커뮤니케이션"
+      ],
+      "coaching_checks": [
+        "추상적인 설명을 촬영 가능한 행동·사물·표정으로 바꿀 수 있는지 살핀다.",
+        "필요한 내레이션·자막을 유지하고 화면과 대사를 맞춘다."
+      ],
+      "evidence_needed": "시각적 서술 원문과 설명/행동 중심 비교 자료. 대사가 적을수록 항상 좋다고 단정하지 않는다.",
+      "source_card_ids": [
+        "multimedia-redundancy",
+        "show-action"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    },
+    {
+      "id": "rq-05",
+      "category": "AI 영상 생성과 전문성",
+      "question": "영상 이론을 구조화한 프롬프트는 일반 프롬프트와 다른 대본을 만드는가?",
+      "theory_candidates": [
+        "영상 문법",
+        "스토리 문법",
+        "프롬프트 엔지니어링"
+      ],
+      "coaching_checks": [
+        "제작 조건·장면 목적·화면·대사·연출·적용 이유를 구분한다.",
+        "같은 소재·모델·길이의 일반 대본과 이론 참고 대본을 비교할 수 있도록 한다."
+      ],
+      "evidence_needed": "동일 조건의 비교 결과와 사전 정의한 평가 기준. 구조화 프롬프트의 우월성을 검증 없이 주장하지 않는다.",
+      "source_card_ids": [
+        "prompt-decomposition",
+        "prompt-evaluation"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    },
+    {
+      "id": "rq-06",
+      "category": "AI 영상 생성과 전문성",
+      "question": "제작자의 암묵적 연출 지식을 명시적 규칙으로 표현할 수 있는가?",
+      "theory_candidates": [
+        "전문가 시스템",
+        "지식 표현",
+        "영화 연출 이론"
+      ],
+      "coaching_checks": [
+        "연출 선택을 적용 조건·구체적 행동·이유·예외로 나누어 기록한다.",
+        "촬영 장소·인원·소품 등 제약을 확인하고 수정 이유를 남긴다."
+      ],
+      "evidence_needed": "전문가가 검토한 연출 사례와 규칙. 팀의 제안을 교수나 전문가의 검증된 규칙으로 표시하지 않는다.",
+      "source_card_ids": [
+        "tacit-elicitation"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    },
+    {
+      "id": "rq-07",
+      "category": "콘텐츠 품질과 차별화",
+      "question": "AI 숏폼의 어떤 특성이 저품질감과 관련되는가?",
+      "theory_candidates": [
+        "지각적 유창성",
+        "내러티브 일관성",
+        "시청각 정합성"
+      ],
+      "coaching_checks": [
+        "불필요한 반복·인과관계 누락·어색한 전환·화면과 대사의 불일치를 점검한다.",
+        "대본에서 확인할 수 있는 문제와 실제 영상 관찰이 필요한 문제를 구분한다."
+      ],
+      "evidence_needed": "시청자 평가 또는 비교 연구. 대본만으로 최종 영상 품질이나 플랫폼 제재 여부를 판정하지 않는다.",
+      "source_card_ids": [
+        "cognitive-load",
+        "multimedia-redundancy",
+        "mp-continuity",
+        "mp-rhythm",
+        "aesthetic-fluency",
+        "mp-sound"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    },
+    {
+      "id": "rq-08",
+      "category": "콘텐츠 품질과 차별화",
+      "question": "같은 소재도 서사와 연출에 따라 창의성·완성도 평가가 달라지는가?",
+      "theory_candidates": [
+        "창의성 평가 이론",
+        "내러티브 몰입",
+        "미디어 미학"
+      ],
+      "coaching_checks": [
+        "같은 제작 조건에서 정보 나열형과 의도적으로 연출한 대안을 제안한다.",
+        "명확성·일관성·연출 구체성·촬영 가능성을 팀의 비교 기준으로 사용한다."
+      ],
+      "evidence_needed": "창의성 평가 정의와 평가자·척도를 명시한 비교 자료. 팀 기준을 검증된 학술 척도로 표시하지 않는다.",
+      "source_card_ids": [
+        "prompt-evaluation",
+        "aesthetic-fluency",
+        "creativity-criteria"
+      ],
+      "coverage_status": "initial_reviewed_sources_connected"
+    }
+  ]
+}
