@@ -23,3 +23,5 @@ jobs:
           python -m unittest discover -s tests -p test_core.py -v
           python -m unittest discover -s tests -p test_gateway.py -v
           python -m unittest discover -s tests -p test_structures.py -v
+      - name: Test real app sessions, database startup and access control
+        run: python tests/test_main_access.py
