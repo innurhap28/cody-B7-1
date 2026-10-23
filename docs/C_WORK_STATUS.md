@@ -4,7 +4,7 @@
 
 2026-10-23, 팀장 저장소 innurhap28/cody-B7-1의 develop(51f37838c0a3e899adf07a4414f423ef4e12348c)에서 로컬 feature/c-ai-deploy를 생성했다. 기존 전달 패키지의 C 코드를 검토하여 A/B 없이 검증할 수 있는 서비스 모듈부터 추가했다. 초기 코드는 AI 도구 도움으로 준비했으며 팀원의 직접 기여나 리뷰 완료를 의미하지 않는다.
 
-원격 feature/c-ai-deploy 브랜치 생성과 초기 코드 업로드를 완료했다. 초기 커밋은 74664617a20f441dde8dcdbfbc4eb3ba9d195532이며, [PR #3](https://github.com/innurhap28/cody-B7-1/pull/3)을 develop 대상으로 열어 리뷰 중이다. 해당 초기 커밋의 GitHub Actions c-unit 및 foundation 검사가 통과했다. 연결 도구 권한 오류 이후 본인 PC의 Git으로 업로드했으며, 초기 커밋의 통과 결과가 이후 수정 커밋까지 보증하는 것은 아니다.
+원격 feature/c-ai-deploy 브랜치와 초기 코드 업로드를 완료했다. 초기 커밋은 74664617a20f441dde8dcdbfbc4eb3ba9d195532, 리뷰 수정 커밋은 b6343e9a93674e25e07f4ed1a0fa7af2201a0811이다. [PR #3](https://github.com/innurhap28/cody-B7-1/pull/3)은 develop에 병합되었다. A PR #4와 B PR #1도 병합되어, 로컬 C 브랜치를 develop의 3ff2c9021176cf14690084032bca5c4e42619dfd까지 fast-forward했다. 초기 및 리뷰 수정 커밋의 Actions 통과와 이번 미커밋 통합 작업의 로컬 검증은 구분한다.
 
 ## 이번에 추가한 코드
 
@@ -20,9 +20,9 @@
 
 ## 충돌 방지 경계
 
-기존 develop 파일은 하나도 수정하지 않았다. main.py, config.py, 공통 schemas.py, README, 기존 CI는 유지한다. A의 템플릿·JS/CSS와 B의 인증·DB·모델·store.py도 추가·변경하지 않는다. 현재 B PR #1의 변경 14개 경로와 이번 C 추가 경로는 겹치지 않는다. 이후 A/B가 새로운 공통 파일을 수정하면 다시 비교해야 하며 미래의 충돌이 없음을 보장하는 것은 아니다.
+1차 PR에서는 기존 develop 파일을 수정하지 않았다. 후속 통합 작업에서는 합의한 공통 main.py의 세션·오류 처리·DB 초기화를 연결했다. config.py, 공통 schemas.py, A의 템플릿·JS/CSS, B의 인증·DB·모델·store.py는 변경하지 않았다. 이후 A/B가 공통 파일을 수정하면 다시 비교해야 한다.
 
-채팅 라우터 app/routers/shortform.py 및 main.py의 최종 연결은 B 저장 계층과 A 화면 준비 후 별도 변경으로 진행한다. 지금 서버의 / 및 /health는 기존 기반 기능이며 로그인·AI 채팅 전체 화면은 아직 이 브랜치에 연결되지 않는다.
+현재 실제 앱에는 B 인증·대화 라우터와 세션·DB 초기화·오류 처리기가 연결되어 있다. /와 /health는 기존 JSON 응답을 유지한다. A 화면 라우팅과 C 채팅 라우터 app/routers/shortform.py는 후속 작업이며, 전체 AI 채팅 화면까지 완료한 상태는 아니다. [세션 통합 검증](C_AUTH_INTEGRATION.md)에 상세 범위와 실행 명령을 기록했다.
 
 ## 직접 수행한 검증
 
@@ -41,7 +41,14 @@
 - 응답 필드나 공통 스키마는 변경하지 않았다. script=null은 새 대본 생성이 없다는 뜻이며 B 저장 계층은 기존 최신 대본을 유지한다.
 - 조건 변경으로 완성된 기획은 ready에서 다시 확인받고, 필수 조건이 지워지면 briefing에서 질문한다.
 - 회귀 검사 4개를 추가했다: 변경 없음(3종 패치), 실제 길이 변경, 필수 조건 제거, 변경 없는 메시지 이후 대본 수정 가능 여부. 기존 설명 질문의 drafted 유지 검사도 유지한다.
-- 리뷰 수정 후 로컬 전체 검사: 57개 통과, 실패 0, skip 0, 0.198초. tmp/review-after-fix.log에 기록했다. 수정분은 로컬 작업 트리에 있으며 초기 원격 Actions 결과와 구분한다. 추가 커밋을 push한 뒤 새 Actions 결과를 확인해야 한다.
+- 리뷰 수정 후 로컬 검사: 57개 통과, 실패 0, skip 0, 0.198초. tmp/review-after-fix.log에 기록했다. 해당 수정은 b6343e9로 업로드되어 c-unit/foundation 통과 후 PR #3으로 병합되었다.
+
+### 후속 통합: 실제 앱의 세션·오류 처리·DB 초기화
+
+- 실제 app.main에서 비로그인 보호 API가 500으로 실패하는 문제를 재현하고 401 JSON 응답으로 수정했다.
+- 실제 app.main과 임시 SQLite로 검사 8개 통과. 별도 앱·테스트용 미들웨어·수동 create_all로 대체하지 않았다.
+- 전체 pytest 74개 및 하위 검사 46개 통과, 실패/skip 0. A DOM 대역 검사 9개 및 작업 화면 검사 10개 통과.
+- 이번 수정은 로컬 C 작업 트리에 있다. 사용자 요청에 따라 자동 커밋·push는 하지 않는다. PR #3은 이미 병합되었으므로 업로드 후 새 통합 PR이 필요하다.
 
 키 없는 검색 확인:
 
@@ -68,11 +75,11 @@ git branch --show-current
 git status
 git diff --cached --stat
 git diff --cached
-git add app/services/shortform/coach.py tests/test_core.py docs/C_WORK_STATUS.md
-git commit -m "fix: 기획 변경 없는 메시지에서 대본 상태 유지"
+git add app/main.py tests/test_main_access.py .github/workflows/c-ai-unit-tests.yml docs/C_WORK_STATUS.md docs/C_AUTH_INTEGRATION.md
+git commit -m "fix: 실제 앱의 세션과 DB 초기화 연결"
 git push
 ```
 
-로컬 작성자 설정과 origin/feature/c-ai-deploy 추적 연결이 완료되어 있다. 같은 브랜치에 추가 커밋을 push하면 기존 PR #3에 반영된다. 다른 팀원 작성자 정보로 커밋하지 않는다.
+로컬 작성자 설정과 origin/feature/c-ai-deploy 추적 연결이 완료되어 있다. PR #3은 이미 병합되었으므로 이번 변경은 새 PR을 생성한다. 다른 팀원 작성자 정보로 커밋하지 않는다.
 
-GitHub PR의 base는 develop, compare는 feature/c-ai-deploy로 한다. 초기 C 모듈 PR임을 밝히고 전체 채팅 연결·실제 AI·배포 미검증 항목을 남긴다.
+GitHub PR의 base는 develop, compare는 feature/c-ai-deploy로 한다. 실제 앱 인증 통합 PR임을 밝히고 전체 채팅 연결·실제 AI·배포 미검증 항목을 남긴다.
